@@ -1,0 +1,67 @@
+#!/bin/bash
+
+usage() {
+    echo "Usage:" 1>&2
+    echo "  bak [-h] <filename> [<filename> ...]" 1>&2
+    echo 1>&2
+    echo "  -h : show help and exit" 1>&2
+    exit 1
+}
+
+help() {
+    echo "bak - create and restore simple file/directory backups"
+    echo ""
+    echo "Usage:"
+    echo "  bak [-h] <filename> [<filename> ...]"
+    echo
+    echo "  -h : show help and exit" 1>&2
+    echo
+    echo "bak has two possible behaviors for each input file:"
+    echo
+    echo "  backup  : If the file is not already a bak-generated backup, then"
+    echo "            it is copied and a <timestamp>.bak suffix is added"
+    echo "  restore : If the file is already a bak-generated backup, then"
+    echo "            it is restored to its original filename. If the original file"
+    echo "            already exists, that file is itself bak-ed"
+    exit
+}
+
+while getopts "h" o; do
+    case "${o}" in
+        h) help;;
+        *) usage;;
+    esac
+done
+shift $((OPTIND-1))
+fnames=("$@")
+# Must be at least one file specified
+[[ "${#fnames[@]}" == "0" ]] && usage
+
+suffix_re='(.*)\.[0-9]{6}-[0-9]{6}\.bak'
+
+# bak an individual file
+fbak() {
+    SUFFIX=`date +%y%m%d-%H%M%S`
+    $2 "$1" "$1.$SUFFIX.bak"
+}
+
+# unbak an individual file. Args: filename unbakedfilename
+funbak() {
+    # If the destination already exists, bak it first
+    if [[ -e "$2" ]] ; then
+        fbak "$2" mv
+    fi
+    # Move the bak'ed file to its original name
+    mv "$1" "$2"
+}
+
+# For each file, if it is already bak'ed, unbak it, otherwise bak it
+for fn in "${fnames[@]}"; do
+    [[ -z "$fn" ]] && echo "ERROR: Illegal blank filename" 1>&2 && usage
+    if [[ "$fn" =~ $suffix_re ]]; then
+        # This file was already bak'ed
+        funbak "$fn" "${BASH_REMATCH[1]}"
+    else
+        fbak "$fn" "cp -r"
+    fi
+done
