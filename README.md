@@ -15,16 +15,16 @@ alias pedit='source /path/to/pedit.sh'
 ## Usage
 
 When you run your `pedit` alias from a shell, your `$EDITOR` will launch with a
-temp file containing all directories on your `$PATH`, one per line. Make changes to the
-order, remove directories, *etc*. When you are happy with the changes, save the
-file and exit the editor. Your `$PATH` will be updated with the new list of
-directories.
+temp file containing all directories on your `$PATH`, one per line. Make
+changes to the order, remove directories, *etc*. When you are happy with the
+changes, save the file and exit the editor. Your `$PATH` will be updated with
+the new list of directories.
 
 If you exit your editor without saving, or there are no valid entries, the
 `$PATH` is not updated.
 
-You can optionally specify a different path-like environment variable to edit as the
-first argument on the command line, e.g.,
+You can optionally specify a different path-like environment variable to edit
+as the first argument on the command line, e.g.,
 
     pedit PYTHONPATH
 
@@ -35,7 +35,8 @@ Create and restore simple file/directory backups
 
 ## Installation
 
-`bak` is a simple bash script. Put it anywhere on your path and ensure it has executable permissions.
+`bak` is a simple bash script. Put it anywhere on your path and ensure it has
+executable permissions.
 
 ## Usage
 
@@ -53,7 +54,9 @@ Create and restore simple file/directory backups
     -rw-r--r--  1 drootang  staff     0B Feb 17 22:53 a.240217-225351.bak
     -rw-r--r--  1 drootang  staff     0B Feb 17 22:53 bc
 
-Running `bak` on a `bak`-generated backup file will restore that backup to the original filename. If the original filename already exists, it will first be `bak`ed up.
+Running `bak` on a `bak`-generated backup file will restore that backup to the
+original filename. If the original filename already exists, it will first be
+`bak`ed up.
 
     % bak a.240217-225351.bak
     % ls -l
@@ -62,7 +65,9 @@ Running `bak` on a `bak`-generated backup file will restore that backup to the o
     -rw-r--r--  1 drootang  staff     0B Feb 17 22:53 a.240217-225521.bak
     -rw-r--r--  1 drootang  staff     0B Feb 17 22:53 bc
 
-Because `bak` uses timestamp suffixes, you can create several local backups. `bak` is simple and only timestamps to the second, which should be more than sufficient for its intended usage.
+Because `bak` uses timestamp suffixes, you can create several local backups.
+`bak` is simple and only timestamps to the second, which should be more than
+sufficient for its intended usage.
 
     % bak a
     % bak a
@@ -75,13 +80,18 @@ Because `bak` uses timestamp suffixes, you can create several local backups. `ba
 
 ## Advantages of `bak` over `cp`
 
-`bak` will never overwrite anything. Unless you have `cp` aliased to `cp -i`, you run the risk of accidentally overwriting something important while using `cp` to manage local file versions.
+`bak` will never overwrite anything. Unless you have `cp` aliased to `cp -i`,
+you run the risk of accidentally overwriting something important while using
+`cp` to manage local file versions.
 
-When restoring a previously backed-up file, `bak` only requires one command where `cp` would require two.
+When restoring a previously backed-up file, `bak` only requires one command
+where `cp` would require two.
 
 ## Notes
 
-The existence of this script should not be taken as an endorsement of haphazard backup strategies nor inefficient workflows. Sometimes you just need to be *sure* a copy of a file is around, or need quick old-school local versioning.
+The existence of this script should not be taken as an endorsement of haphazard
+backup strategies nor inefficient workflows. Sometimes you just need to be
+*sure* a copy of a file is around, or need quick old-school local versioning.
 
 
 # `swap`
@@ -90,7 +100,8 @@ Swap the names of two files
 
 ## Installation
 
-`swap` is a simple bash script. Put it anywhere on your path and ensure it has executable permissions.
+`swap` is a simple bash script. Put it anywhere on your path and ensure it has
+executable permissions.
 
 ## Usage
 
@@ -107,3 +118,21 @@ Swap the names of two files
     bbb
     % cat b.txt
     aaa
+
+
+# `csvtab`
+
+## Installation
+
+`csvtab` is a simple bash script. Put it anywhere on your path and ensure it
+has executable permissions.
+
+## Usage
+
+Read a CSV file into neatly organized columns into `$EDITOR` or vim. `$EDITOR`
+must support using `-` to read from stdin.
+
+You may pass the CSV filename as an argument to `csvtab` or pipe it in:
+
+    % csvtab input.csv
+    % cat input.csv | csvtab
