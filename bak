@@ -4,6 +4,7 @@ usage() {
     echo "Usage:" 1>&2
     echo "  bak [-h] <filename> [<filename> ...]" 1>&2
     echo 1>&2
+    echo "  -d : delete original file after backup created" 1>&2
     echo "  -h : show help and exit" 1>&2
     exit 1
 }
@@ -14,21 +15,25 @@ help() {
     echo "Usage:"
     echo "  bak [-h] <filename> [<filename> ...]"
     echo
-    echo "  -h : show help and exit" 1>&2
+    echo "  -d : delete original file after backup created"
+    echo "  -h : show help and exit"
     echo
     echo "bak has two possible behaviors for each input file:"
     echo
     echo "  backup  : If the file is not already a bak-generated backup, then"
-    echo "            it is copied and a <timestamp>.bak suffix is added"
+    echo "            it is copied and a <timestamp>.bak suffix is added. If"
+    echo "            -d is used, the original file is deleted."
     echo "  restore : If the file is already a bak-generated backup, then"
     echo "            it is restored to its original filename. If the original file"
     echo "            already exists, that file is itself bak-ed"
     exit
 }
 
-while getopts "h" o; do
+DELETE=0
+while getopts "hd" o; do
     case "${o}" in
         h) help;;
+        d) DELETE=1;;
         *) usage;;
     esac
 done
@@ -61,6 +66,8 @@ for fn in "${fnames[@]}"; do
     if [[ "$fn" =~ $suffix_re ]]; then
         # This file was already bak'ed
         funbak "$fn" "${BASH_REMATCH[1]}"
+    elif [[ $DELETE == 1 ]] ; then
+        fbak "$fn" "mv"
     else
         fbak "$fn" "cp -r"
     fi
